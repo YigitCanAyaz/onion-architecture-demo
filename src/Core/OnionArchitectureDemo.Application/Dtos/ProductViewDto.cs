@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnionArchitectureDemo.Application.Dto
+namespace OnionArchitectureDemo.Application.Dtos
 {
     public class ProductViewDto
     {

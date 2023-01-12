@@ -13,7 +13,7 @@ namespace OnionArchitectureDemo.Persistence
 {
     public static class ServiceRegistration
     {
-        public static void AddPersistanceServices(this IServiceCollection serviceCollection)
+        public static void AddPersistanceRegistration(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddDbContext<ApplicationDbContext>(opt => opt.UseInMemoryDatabase("memoryDb"));
 

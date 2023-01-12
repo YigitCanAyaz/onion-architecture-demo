@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OnionArchitectureDemo.Application.Dto;
+using OnionArchitectureDemo.Application.Dtos;
+using OnionArchitectureDemo.Application.Features.Commands.CreateProduct;
+using OnionArchitectureDemo.Application.Features.Queries.GetAllProducts;
+using OnionArchitectureDemo.Application.Features.Queries.GetProductById;
 using OnionArchitectureDemo.Application.Interfaces.Repository;
+using OnionArchitectureDemo.Application.Wrappers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OnionArchitectureDemo.WebApi.Controllers
 {
@@ -9,25 +15,33 @@ namespace OnionArchitectureDemo.WebApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        readonly private IProductRepository _productRepository;
+        private readonly IMediator _mediator;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IMediator mediator)
         {
-            _productRepository = productRepository;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var allList = await _productRepository.GetAllAsync();
+            var query = new GetAllProductsQuery();
 
-            var result = allList.Select(i => new ProductViewDto()
-            {
-                Id = i.Id,
-                Name = i.Name,
-            }).ToList();
+            return Ok(await _mediator.Send(query));
+        }
 
-            return Ok(result);
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var query = new GetProductByIdQuery() { Id = id };
+
+            return Ok(await _mediator.Send(query));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateProductCommand command)
+        {
+            return Ok(await _mediator.Send(command));
         }
     }
 }
